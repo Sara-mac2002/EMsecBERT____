@@ -34,6 +34,12 @@ ics_data = collector.collect_mitre_ics_data()
 
 # Collect Enterprise data
 enterprise_data = collector.collect_mitre_enterprise_data()
+
+# Collect both frameworks
+both_data = {
+    'ics': collector.collect_mitre_ics_data(),
+    'enterprise': collector.collect_mitre_enterprise_data()
+}
 ```
 
 ### 2. Extract Entities with EMsecBERT
@@ -46,8 +52,16 @@ extractor = EMsecBERTExtractor(
     model_checkpoint_path="your_project_directory_path/Automated_Extraction/model/CySecBert_crf_checkpoint.pt"
 )
 
-# Process MITRE data and extract entities
-results = extractor.process_mitre_data(ics_data, "ICS_Extracted_Entities")
+# Process ICS data and extract entities
+ics_results = extractor.process_mitre_data(ics_data, "ICS_Extracted_Entities")
+
+# Process Enterprise data and extract entities
+enterprise_results = extractor.process_mitre_data(enterprise_data, "Enterprise_Extracted_Entities")
+
+# Process both datasets
+for framework, data in both_data.items():
+    results = extractor.process_mitre_data(data, f"{framework.upper()}_Extracted_Entities")
+    print(f"Processed {len(results)} entries for {framework}")
 ```
 
 ## Command Line Usage
@@ -129,11 +143,4 @@ emobility/automated/extraction/
 └── README.md                  # This file
 ```
 
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
 
