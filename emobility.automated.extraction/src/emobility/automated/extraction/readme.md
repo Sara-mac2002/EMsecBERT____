@@ -142,5 +142,3 @@ emobility/automated/extraction/
 ├── setup.py                   # Package setup
 └── README.md                  # This file
 ```
-
-

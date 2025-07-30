@@ -57,21 +57,6 @@ All models use BERT+CRF architecture:
 - **Contextual Encoder**: Pre-trained BERT for token representations
 - **CRF Layer**: Ensures valid BIO tag sequences
 - **Fine-tuning**: End-to-end fine-tuning on cybersecurity datasets
-```python
-
-## Using the Pre-trained EMsecBERT Model
-# Basic Entity Extraction
-
-
-from emobility.automated.extraction import EMsecBERTExtractor 
-# Initialize with best-performing model checkpoint
- extractor = EMsecBERTExtractor( model_checkpoint_path="Automated_Extraction/model/CySecBert_crf_checkpoint.pt" )
- # Extract entities from threat description 
-threat_text = """Adversaries may inject malicious code into the charging station controller if the device firmware is outdated. Implement certificate-based authentication to prevent unauthorized access.""" entities = extractor.extract_entities(threat_text) 
-print(f"Target Assets: {entities.get('TARGET_ASSET', [])}") 
-print(f"Preconditions: {entities.get('PRECON', [])}")
- print(f"Mitigations: {entities.get('MITIGATION', [])}")
-```
 
 
 ### Dataset Structure
@@ -79,17 +64,17 @@ Training Data Organization
 ```
 Automated_Extraction/Datasets/
 ├── Mitre_ENTREPRISE/           # Enterprise IT threats (63 entries)
-│   ├── train.txt              # Training split (70%)
+│   ├── train.txt              # Fine-tuning split (70%)
 │   ├── valid.txt              # Validation split (15%)
 │   ├── test.txt               # Test split (15%)
 │   └── BIO.txt                # Complete BIO-tagged dataset
 ├── Mitre_ICS/                 # Industrial Control Systems (95 entries)
-│   ├── train.txt              # Training split
+│   ├── train.txt              # Fine-tuning split
 │   ├── valid.txt              # Validation split
 │   └── test.txt                  # Test split
 │   └── BIO.txt                # Complete BIO-tagged dataset
 └── Paper_report/              # Sandia report data (18 entries)
-    ├── train.txt              # Training split
+    ├── train.txt              # Fine-tuning split
     ├── valid.txt              # Validation split
     └── test.txt               # Test split
     └── BIO.txt                # Complete BIO-tagged dataset
@@ -97,11 +82,7 @@ Automated_Extraction/Datasets/
 ### Dataset Statistics
 * Total Entries: 176 threat scenarios
 * Total Tokens: 49,726 labeled tokens
-* Label Distribution:
-    * TARGET_ASSET: 2,613 B-tags, 1,405 I-tags
-    * PRECON: 299 B-tags, 411 I-tags
-    * MITIGATION: 49 B-tags, 372 I-tags
-* Data Split: 70% train, 15% validation, 15% test
+* Data Split: 70% fine-tuning, 15% validation, 15% test
 Command Line Interface
 
 
@@ -113,7 +94,30 @@ All models evaluated using:
 * Entity-level recall: Correctly predicted entities / Total actual entities
 * F1-score: Harmonic mean of precision and recall
 
-### Integration with EMOBILITY-DSML Framework
+
+### Using the Pre-trained EMsecBERT Model for Basic Entity Extraction
+ 
+```python
+from emobility.automated.extraction import EMsecBERTExtractor 
+# Initialize with best-performing model checkpoint
+ extractor = EMsecBERTExtractor( model_checkpoint_path="Automated_Extraction/model/CySecBert_crf_checkpoint.pt" )
+ # Extract entities from threat description 
+threat_text = """
+Adversaries may inject 
+malicious code into the  
+charging station 
+controller if the device firmware 
+is outdated. Implement certificate-
+based authentication to prevent 
+unauthorized access.""" 
+entities = extractor.extract_entities(threat_text) 
+print(f"Target Assets: {entities.get('TARGET_ASSET', [])}") 
+print(f"Preconditions: {entities.get('PRECON', [])}")
+ print(f"Mitigations: {entities.get('MITIGATION', [])}")
+```
+
+
+### Integrating EMsecBERT with EMOBILITY-DSML Framework
 ```python
 
 from emobility.automated.extraction import EMsecBERTExtractor
@@ -147,9 +151,9 @@ for framework, data in both_data.items():
 ```
 EMsecBERT/
 ├── Automated_Extraction/           # Core research implementation
-│   ├── Datasets/                   # Training datasets (176 entries, 49,726 tokens)
-│   ├── fine-tune/                  # Model training scripts
-│   ├── model/                      # Best checkpoint (CySecBERT F1: 81.44%)
+│   ├── Datasets/                   # (176 entries, 49,726 tokens)
+│   ├── fine-tune/                  # Model fine-tuning scripts
+│   ├── model/                      # Best checkpoint (best performing across all 30 runs, achieving a test F1-score of 83.72% and validation F1-score of 88.60%)
 │   └── requirements/               # Dependencies
 ├── Data_Extraction/               # Historical data collection scripts(research phase)
 │   ├── MITRE_ENTREPRISE/          # Enterprise data extraction
@@ -164,7 +168,7 @@ EMsecBERT/
    └── README.md                  # This file
 ```
 
-Requirements
+### Requirements
 * Python 3.8+
 * PyTorch 1.9+
 * Transformers 4.0+
@@ -172,7 +176,7 @@ Requirements
 * scikit-learn 1.0+
 See requirements.txt for complete dependency list.
 
-Acknowledgments
+### Acknowledgments
 * MITRE Corporation for the ATT&CK framework
 * Sandia National Laboratories for electric mobility security research
 * Google for Gemini 2.5 Pro used in dataset annotation
