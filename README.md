@@ -31,7 +31,7 @@ python Data_Extraction/MITRE_ENTREPRISE/MITRE_ENTREPRISE.py
 
 
 ### Installation
-```python
+```bash
 # Clone the repository
 git clone https://github.com/yourusername/EMsecBERT.git
 cd EMsecBERT
@@ -48,7 +48,7 @@ python Automated_Extraction/fine-tune/bert.py --dataset_path Automated_Extractio
 
 # Fine-tune domain-adapted models
 python Automated_Extraction/fine-tune/cysecbert.py --epochs 10 --batch_size 16
-python Automated_Extraction/fine-tune/secbert.py --learning_rate 2e-5
+python Automated_Extraction/fine-tune/secbert.py --learning_rate 5e-5
 python Automated_Extraction/fine-tune/securebert.py --dataset_path Automated_Extraction/Datasets/
 ```
 
@@ -100,7 +100,8 @@ All models evaluated using:
 ```python
 from emobility.automated.extraction import EMsecBERTExtractor 
 # Initialize with best-performing model checkpoint
- extractor = EMsecBERTExtractor( model_checkpoint_path="Automated_Extraction/model/CySecBert_crf_checkpoint.pt" )
+#  Replace "your_project_directory_path" with your actual project directory path          
+ extractor = EMsecBERTExtractor( model_checkpoint_path="your_project_directory_path/Automated_Extraction/model/CySecBert_crf_checkpoint.pt" )
  # Extract entities from threat description 
 threat_text = """
 Adversaries may inject 
@@ -119,14 +120,6 @@ print(f"Preconditions: {entities.get('PRECON', [])}")
 
 ### Integrating EMsecBERT with EMOBILITY-DSML Framework
 ```python
-
-from emobility.automated.extraction import EMsecBERTExtractor
-
-# Initialize with best-performing model checkpoint
-extractor = EMsecBERTExtractor(
-    model_checkpoint_path="Automated_Extraction/model/CySecBert_crf_checkpoint.pt"
-)
-
 # Extract entities from threat description
 from emobility.automated.extraction import EMsecBERTExtractor
 #  Replace "your_project_directory_path" with your actual project directory path          
