@@ -95,7 +95,7 @@ All models evaluated using:
 * F1-score: Harmonic mean of precision and recall
 
 
-### Using the Pre-trained EMsecBERT Model for Basic Entity Extraction
+### Using  EMsecBERT Model for Basic Entity Extraction
  
 ```python
 from emobility.automated.extraction import EMsecBERTExtractor 
